@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>UniLeave Pro - University Leave Management</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', 'Segoe UI', Tahoma, sans-serif;
+}
+
+:root {
+    /* Professional University Colors */
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+    --secondary: #059669;
+    --accent: #dc2626;
+    --warning: #d97706;
+    --dark: #1f2937;
+    --light-bg: #f8fafc;
+    --white: #ffffff;
+    --glass-bg: rgba(255, 255, 255, 0.9);
+    --shadow: 0 10px 40px rgba(0,0,0,0.1);
+    --border: #e2e8f0;
+}
+
+/* LANDING PAGE - Professional Blue Theme */
+body.landing {
+    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+    color: var(--dark);
+}
+
+.hero-section {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 5%;
+    position: relative;
+}
+
+.hero-content {
+    max-width: 600px;
+}
+
+.hero-content h1 {
+    font-size: 4.5rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 24px;
+    line-height: 1.1;
+}
+
+.hero-content p {
+    font-size: 1.4rem;
+    color: #64748b;
+    margin-bottom: 40px;
+    line-height: 1.7;
+}
+
+.cta-buttons {
+    display: flex;
+    gap: 20px;
+}
+
+.btn-primary, .btn-secondary {
+    padding: 16px 32px;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    box-shadow: var(--shadow);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 20px 50px rgba(37, 99, 235, 0.4);
+}
+
+.btn-secondary {
+    background: var(--white);
+    color: var(--primary);
+    border: 2px solid var(--primary);
+}
+
+.btn-secondary:hover {
+    background: var(--primary);
+    color: var(--white);
+}
+
+.hero-image {
+    width: 500px;
+    height: 500px;
+    position: relative;
+}
+
+.floating-card {
+    position: absolute;
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: var(--shadow);
+    animation: float 6s ease-in-out infinite;
+}
+
+.floating-card:nth-child(1) { top: 10%; left: 10%; animation-delay: 0s; }
+.floating-card:nth-child(2) { top: 60%; right: 20%; animation-delay: 2s; }
+.floating-card:nth-child(3) { bottom: 20%; left: 50%; animation-delay: 4s; transform: translateX(-50%); }
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+}
+
+/* LOGIN MODULES */
+.login-modules {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 100px 5%;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+    gap: 40px;
+}
+
+.module-card {
+    background: var(--white);
+    border-radius: 24px;
+    padding: 40px;
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.23,1,0.32,1);
+    cursor: pointer;
+    border: 1px solid var(--border);
+}
+
+.module-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    transition: left 0.6s;
+}
+
+.module-card:hover::before {
+    left: 100%;
+}
+
+.module-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 25px 60px rgba(0,0,0,0.15);
+}
+
+.module-icon {
+    width: 90px;
+    height: 90px;
+    margin: 0 auto 24px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.8rem;
+    color: white;
+    box-shadow: 0 10px 30px rgba(37, 99, 235, 0.3);
+}
+
+.module-card h3 {
+    font-size: 2rem;
+    text-align: center;
+    margin-bottom: 20px;
+    color: var(--dark);
+    font-weight: 700;
+}
+
+.module-form {
+    display: none;
+}
+
+.module-form.active {
+    display: block;
+    animation: slideUp 0.4s ease;
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.module-form input {
+    width: 100%;
+    padding: 16px 20px;
+    margin: 12px 0;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    background: #f1f5f9;
+    color: var(--dark);
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.module-form input::placeholder {
+    color: #94a3b8;
+}
+
+.module-form input:focus {
+    outline: none;
+    border-color: var(--primary);
+    background: var(--white);
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+    transform: translateY(-1px);
+}
+
+.module-login-btn {
+    width: 100%;
+    padding: 18px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    margin-top: 12px;
+    box-shadow: 0 4px 20px rgba(37, 99, 235, 0.3);
+}
+
+.module-login-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(37, 99, 235, 0.4);
+}
+
+/* DASHBOARD ENHANCEMENTS */
+.dashboard {
+    background: var(--light-bg);
+    min-height: 100vh;
+}
+
+.profile-header {
+    background: var(--white);
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.profile-avatar {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: white;
+    font-weight: bold;
+}
+
+.profile-info h2 {
+    font-size: 2rem;
+    color: var(--dark);
+    margin-bottom: 5px;
+}
+
+.profile-info p {
+    color: #64748b;
+    font-size: 1.1rem;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background: var(--white);
+    padding: 30px;
+    border-radius: 16px;
+    text-align: center;
+    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--primary);
+    margin-bottom: 8px;
+}
+
+.leave-form {
+    background: var(--white);
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.form-group {
+    margin-bottom: 24px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 8px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 16px 20px;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    background: #f1f5f9;
+    color: var(--dark);
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    background: var(--white);
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+}
+
+.primary-btn {
+    background: linear-gradient(135deg, var(--secondary), #047857);
+    color: white;
+    border: none;
+    padding: 18px 40px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 20px rgba(5, 150, 105, 0.3);
+    width: 100%;
+}
+
+.primary-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(5, 150, 105, 0.4);
+}
+
+.card {
+    background: var(--white);
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    margin-bottom: 24px;
+}
+
+.leave-item {
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 20px;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.leave-item:hover {
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+}
+
+.status-pending { color: var(--warning); font-weight: 700; }
+.status-approved { color: var(--secondary); font-weight: 700; }
+.status-rejected { color: var(--accent); font-weight: 700; }
+
+.badge {
+    background: var(--accent);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    display: none;
+}
+
+.sidebar {
+    width: 280px;
+    height: 100vh;
+    background: linear-gradient(180deg, var(--dark) 0%, #111827 100%);
+    color: white;
+    padding: 40px 24px;
+    position: fixed;
+    box-shadow: 4px 0 30px rgba(0,0,0,0.1);
+    overflow-y: auto;
+}
+
+.sidebar h3 {
+    margin-bottom: 40px;
+    font-size: 1.6rem;
+    text-align: center;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.sidebar button {
+    width: 100%;
+    margin-bottom: 16px;
+    padding: 16px 20px;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: white;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.sidebar button:hover,
+.sidebar button.active {
+    background: var(--primary);
+    transform: translateX(8px);
+    box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4);
+}
+
+.main {
+    padding: 40px;
+    margin-left: 300px;
+    min-height: 100vh;
+}
+
+.sidebar-toggle {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1000;
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 12px;
+    cursor: pointer;
+    display: none;
+}
+
+.footer {
+    background: var(--dark);
+    color: white;
+    padding: 40px 5% 20px;
+    margin-top: 60px;
+}
+
+@media (max-width: 1024px) {
+    .sidebar { transform: translateX(-100%); transition: 0.3s ease; }
+    .sidebar.open { transform: translateX(0); }
+    .sidebar-toggle { display: block; }
+    .main { margin-left: 0; padding: 20px; }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .hero-content h1 { font-size: 3rem; }
+    .cta-buttons { flex-direction: column; }
+    .login-modules { grid-template-columns: 1fr; }
+}
+</style>
+
+<script>
+const employees = [
+    {id: "1001", password: "1111", name: "Raju", role: "Assistant Professor"},
+    {id: "1002", password: "2222", name: "Suresh", role: "Associate Professor"},
+    {id: "1003", password: "3333", name: "Priya", role: "Professor"},
+    {id: "1004", password: "4444", name: "Ravi", role: "Assistant Professor"},
+    {id: "1005", password: "5555", name: "Anitha", role: "Associate Professor"},
+    {id: "1006", password: "6666", name: "Rahul", role: "Professor"},
+    {id: "1007", password: "7777", name: "Meena", role: "Assistant Professor"},
+    {id: "1008", password: "8888", name: "Vikram", role: "Associate Professor"},
+    {id: "1009", password: "9999", name: "Kavya", role: "Professor"},
+    {id: "1010", password: "1010", name: "Arjun", role: "Assistant Professor"}
+];
+
+const hodCredentials = {id: "0987", password: "1234", name: "HOD Portal"};
+
+let currentPage = 'home';
+
+function loadLanding() {
+    document.body.innerHTML = `
+        <section class="hero-section">
+            <div class="hero-content">
+                <h1>University leave system</h1>
+                <p>Modern University Leave Management System with intelligent approvals, real-time tracking, and beautiful interface. Trusted by 100+ faculty members.</p>
+                <div class="cta-buttons">
+                    <button class="btn-primary" onclick="showLoginModules()">🚀 Get Started</button>
+                    <button class="btn-secondary" onclick="scrollToFeatures()">📋 Explore Features</button>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div class="floating-card">
+                    <div style="font-size: 2.5rem;">👨‍🏫</div>
+                    <p style="font-size: 1rem; margin-top: 12px;">Employee Portal</p>
+                </div>
+                <div class="floating-card">
+                    <div style="font-size: 2.5rem;">👨‍💼</div>
+                    <p style="font-size: 1rem; margin-top: 12px;">HOD Dashboard</p>
+                </div>
+                <div class="floating-card">
+                    <div style="font-size: 2.5rem;">📊</div>
+                    <p style="font-size: 1rem; margin-top: 12px;">Analytics</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="login-section" style="display: none; padding: 100px 5%;">
+            <div class="login-modules">
+                <div class="module-card" onclick="toggleModule('emp-module')">
+                    <div class="module-icon">👨‍🏫</div>
+                    <h3>Employee Portal</h3>
+                    <div id="emp-module" class="module-form">
+                        <input type="text" id="empId" placeholder="Employee ID (1001-1010)">
+                        <input type="password" id="empPass" placeholder="Password (1111-1010)">
+                        <button class="module-login-btn" onclick="loginEmployee(event)">🚀 Employee Login</button>
+                    </div>
+                </div>
+                <div class="module-card" onclick="toggleModule('hod-module')">
+                    <div class="module-icon">👨‍💼</div>
+                    <h3>HOD Portal</h3>
+                    <div id="hod-module" class="module-form">
+                        <input type="text" id="hodId" placeholder="HOD ID">
+                        <input type="password" id="hodPass" placeholder="Password">
+                        <button class="module-login-btn" onclick="loginHOD(event)">🔐 HOD Access</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="footer">
+            <div style="max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; padding: 40px 0;">
+                <div>
+                    <h4 style="margin-bottom: 20px; color: #60a5fa;">🌟 Key Features</h4>
+                    <div style="display: grid; gap: 12px;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="width: 32px; height: 32px; background: #10b981; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 14px;">📱</div>
+                            <span>Real-time Notifications</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="width: 32px; height: 32px; background: #f59e0b; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 14px;">⚡</div>
+                            <span>Instant Approvals</span>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h4 style="margin-bottom: 20px; color: #60a5fa;">📞 Contact</h4>
+                    <p>Kakinada,Andhra Pradesh, India</p>
+                    <p>support@unileavepro.com</p>
+                    <p>+91 98765 43210</p>
+                </div>
+                <div>
+                    <h4 style="margin-bottom: 20px; color: #60a5fa;">👨‍💻 Developers</h4>
+                    <div style="display: grid; gap: 8px; font-size: 14px;">
+                        <div>Ajay - Backend Architect</div>
+                        <div>Dinesh - Frontend Wizard</div>
+                        <div>Chiranjeevi - DevOps & Deploy</div>
+                        <div>Surya - Database Master</div>
+                    </div>
+                </div>
+            </div>
+            <div style="text-align: center; padding: 20px 0; border-top: 1px solid #374151; color: #9ca3af; font-size: 14px;">
+                © 2026 UniLeave Pro. All rights reserved | Built with ❤️ in kakinada,Andhra Pradesh.
+            </div>
+        </footer>
+    `;
+    document.body.classList.add('landing');
+}
+
+function showLoginModules() {
+    document.getElementById('login-section').style.display = 'block';
+    document.querySelector('.hero-section').style.minHeight = '70vh';
+    document.getElementById('login-section').scrollIntoView({ behavior: 'smooth' });
+}
+
+function toggleModule(moduleId) {
+    const module = document.getElementById(moduleId);
+    const allModules = document.querySelectorAll('.module-form');
+    allModules.forEach(m => m.classList.remove('active'));
+    module.classList.toggle('active');
+}
+
+function loginEmployee(event) {
+    event.stopPropagation();
+    const empIdInput = document.getElementById('empId');
+    const empPassInput = document.getElementById('empPass');
+    let emp = employees.find(e => e.id === empIdInput.value && e.password === empPassInput.value);
+    if (emp) {
+        localStorage.setItem("name", emp.name);
+        localStorage.setItem("id", emp.id);
+        localStorage.setItem("role", emp.role);
+        loadDashboard(false);
+    } else {
+        empIdInput.style.borderColor = '#ef4444';
+        empIdInput.style.animation = 'shake 0.5s ease-in-out';
+        setTimeout(() => {
+            empIdInput.style.borderColor = '';
+            empIdInput.style.animation = '';
+        }, 500);
+        alert("❌ Invalid Employee Credentials!");
+    }
+}
+
+function loginHOD(event) {
+    event.stopPropagation();
+    const hodIdInput = document.getElementById('hodId');
+    const hodPassInput = document.getElementById('hodPass');
+    if (hodIdInput.value === hodCredentials.id && hodPassInput.value === hodCredentials.password) {
+        localStorage.setItem("name", hodCredentials.name);
+        localStorage.setItem("id", hodCredentials.id);
+        localStorage.setItem("role", "HOD");
+        loadDashboard(true);
+    } else {
+        hodIdInput.style.borderColor = '#ef4444';
+        hodIdInput.style.animation = 'shake 0.5s ease-in-out';
+        setTimeout(() => {
+            hodIdInput.style.borderColor = '';
+            hodIdInput.style.animation = '';
+        }, 500);
+        alert("❌ Invalid HOD Credentials!");
+    }
+}
+
+function loadDashboard(isHOD = false) {
+    document.body.classList.remove('landing');
+    currentPage = 'home';
+    document.body.innerHTML = `
+        <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+        <div class="dashboard">
+            <div class="sidebar" id="sidebar">
+                <h3>${isHOD ? "👨‍💼 HOD Portal" : "👨‍🏫 Leave Portal"}</h3>
+                <button onclick="showPage('home')" ${currentPage === 'home' ? 'class="active"' : ''}>
+                    🏠 Home
+                </button>
+                ${!isHOD ? `
+                    <button onclick="showPage('apply')" ${currentPage === 'apply' ? 'class="active"' : ''}>
+                        ➕ Apply Leave
+                    </button>
+                    <button onclick="showPage('leaves')" ${currentPage === 'leaves' ? 'class="active"' : ''}>
+                        📜 My Leaves
+                    </button>
+                ` : ''}
+                ${isHOD ? `
+                    <button onclick="showPage('leaves')" ${currentPage === 'leaves' ? 'class="active"' : ''}>
+                        📋 View Leaves <span id="badge" class="badge"></span>
+                    </button>
+                ` : ''}
+                <button onclick="showPage('profile')" ${currentPage === 'profile' ? 'class="active"' : ''}>
+                    👤 Profile
+                </button>
+                <button onclick="loadLanding()" style="background: #ef4444; margin-top: 20px;">
+                    🚪 Logout
+                </button>
+            </div>
+            <div class="main">
+                <div id="content"></div>
+            </div>
+        </div>
+    `;
+    showPage('home');
+    if (isHOD) updateBadge();
+}
+
+function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+}
+
+function showPage(page) {
+    currentPage = page;
+    const buttons = document.querySelectorAll('.sidebar button');
+    buttons.forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+    document.getElementById('sidebar').classList.remove('open');
+    
+    const content = document.getElementById('content');
+    const userName = localStorage.getItem('name');
+    const userRole = localStorage.getItem('role');
+    const userId = localStorage.getItem('id');
+    const isHOD = userRole === 'HOD';
+
+    if (page === 'home') {
+        content.innerHTML = `
+            <div class="profile-header">
+                <div class="profile-avatar">${userName.charAt(0).toUpperCase()}</div>
+                <div class="profile-info">
+                    <h2>Welcome back, ${userName}!</h2>
+                    <p>${userRole} • ID: ${userId}</p>
+                </div>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" style="color: ${isHOD ? '#3b82f6' : '#10b981'}">${getMonthlyLeavesCount()}</div>
+                    <div style="color: #64748b; font-weight: 600;">Leaves Used</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" style="color: #f59e0b;">${getLeaveBalance()}</div>
+                    <div style="color: #64748b; font-weight: 600;">Remaining</div>
+                </div>
+                ${isHOD ? `
+                    <div class="stat-card">
+                        <div class="stat-number" style="color: #ef4444;">${getPendingCount()}</div>
+                        <div style="color: #64748b; font-weight: 600;">Pending Requests</div>
+                    </div>
+                ` : ''}
+            </div>
+            <div class="card" style="text-align: center; padding: 60px;">
+                <h3 style="color: #64748b; margin-bottom: 20px;">✨ Ready to manage your leaves?</h3>
+                ${!isHOD ? '<button class="primary-btn" onclick="showPage(\'apply\')">Apply for Leave</button>' : ''}
+            </div>
+        `;
+    } else if (page === 'apply') {
+        content.innerHTML = `
+            <div class="leave-form">
+                <h2 style="margin-bottom: 30px; color: var(--dark);">➕ New Leave Application</h2>
+                <div class="form-group">
+                    <label>Leave Type</label>
+                    <select id="leaveType">
+                        <option>Casual Leave</option>
+                        <option>Sick Leave</option>
+                        <option>Personal Leave</option>
+                        <option>Emergency Leave</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Start Date</label>
+                    <input type="date" id="startDate">
+                </div>
+                <div class="form-group">
+                    <label>End Date</label>
+                    <input type="date" id="endDate">
+                </div>
+                <div class="form-group">
+                    <label>Reason <span style="color: #ef4444;">*</span></label>
+                    <textarea id="leaveReason" rows="5" placeholder="Enter detailed reason for your leave request..."></textarea>
+                </div>
+                <button class="primary-btn" onclick="submitLeave()">📤 Submit Leave Request</button>
+            </div>
+        `;
+        document.getElementById('startDate').valueAsDate = new Date();
+    } else if (page === 'leaves') {
+        showLeaves(isHOD);
+    } else if (page === 'profile') {
+        content.innerHTML = `
+            <div class="profile-header">
+                <div class="profile-avatar">${userName.charAt(0).toUpperCase()}</div>
+                <div class="profile-info">
+                    <h2>${userName}</h2>
+                    <p>${userRole} • ID: ${userId}</p>
+                </div>
+            </div>
+            <div class="card">
+                <h3>👤 Profile Information</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 24px;">
+                    <div>
+                        <strong>Full Name:</strong> ${userName}<br>
+                        <strong>Employee ID:</strong> ${userId}<br>
+                        <strong>Role:</strong> ${userRole}<br>
+                        <strong>Monthly Limit:</strong> 3 leaves
+                    </div>
+                    <div>
+                        <strong>Leaves Used:</strong> ${getMonthlyLeavesCount()}/3<br>
+                        <strong>Status:</strong> Active<br>
+                        <strong>Joined:</strong> ${new Date().getFullYear() - 2}
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+}
+
+function getMonthlyLeavesCount() {
+    const leaves = JSON.parse(localStorage.getItem("leaves")) || [];
+    const id = localStorage.getItem("id");
+    const now = new Date();
+    return leaves.filter(l => 
+        l.id === id && 
+        l.month === now.getMonth() && 
+        l.year === now.getFullYear()
+    ).length;
+}
+
+function getLeaveBalance() {
+    return 3 - getMonthlyLeavesCount();
+}
+
+function getPendingCount() {
+    const leaves = JSON.parse(localStorage.getItem("leaves")) || [];
+    return leaves.filter(l => l.status === "Pending").length;
+}
+
+function submitLeave() {
+    const leaveType = document.getElementById('leaveType').value;
+    const startDate = document.getElementById('startDate').value;
+    const endDate = document.getElementById('endDate').value;
+    const reason = document.getElementById('leaveReason').value;
+
+    if (!reason.trim()) {
+        alert('Please enter a reason for your leave.');
+        return;
+    }
+
+    const leaves = JSON.parse(localStorage.getItem("leaves")) || [];
+    const id = localStorage.getItem("id");
+    const now = new Date();
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
+
+    const monthlyCount = leaves.filter(l => 
+        l.id === id && 
+        l.month === currentMonth && 
+        l.year === currentYear
+    ).length;
+
+    if (monthlyCount >= 3) {
+        alert('❌ Monthly leave limit reached (3 leaves).');
+        return;
+    }
+
+    const leave = {
+        name: localStorage.getItem("name"),
+        id: id,
+        role: localStorage.getItem("role"),
+        type: leaveType,
+        startDate: startDate,
+        endDate: endDate,
+        reason: reason,
+        status: "Pending",
+        date: now.toLocaleDateString() + " | " + now.toLocaleTimeString(),
+        month: currentMonth,
+        year: currentYear
+    };
+
+    leaves.push(leave);
+    localStorage.setItem("leaves", JSON.stringify(leaves));
+    
+    alert('✅ Leave request submitted successfully!');
+    showPage('home');
+}
+
+function showLeaves(isHOD) {
+    const leaves = JSON.parse(localStorage.getItem("leaves")) || [];
+    const userId = localStorage.getItem("id");
+    const content = document.getElementById('content');
+    
+    let filteredLeaves = isHOD ? leaves : leaves.filter(l => l.id === userId);
+    let title = isHOD ? '📋 All Leave Requests' : '📜 My Leave History';
+    
+    let html = `
+        <div class="card">
+            <h2>${title}</h2>
+    `;
+    
+    if (filteredLeaves.length === 0) {
+        html += '<p style="text-align: center; color: #64748b; font-size: 1.1rem;">No leave requests found.</p>';
+    } else {
+        filteredLeaves.forEach((leave, index) => {
+            const globalIndex = leaves.indexOf(leave);
+            html += `
+                <div class="leave-item">
+                    ${isHOD ? `<span onclick="deleteLeave(${globalIndex})" style="position: absolute; top: 20px; right: 20px; cursor: pointer; font-size: 20px; color: #ef4444;">🗑️</span>` : ''}
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                        <h4>${leave.name} ${isHOD ? `<small style="color: #64748b;">(${leave.role})</small>` : ''}</h4>
+                        ${!isHOD ? `<span class="status-${leave.status.toLowerCase()}">${leave.status}</span>` : ''}
+                    </div>
+                    <p><strong>📝 Reason:</strong> ${leave.reason}</p>
+                    ${leave.type ? `<p><strong>📋 Type:</strong> ${leave.type}</p>` : ''}
+                    ${leave.startDate ? `<p><strong>📅 Dates:</strong> ${leave.startDate} to ${leave.endDate}</p>` : ''}
+                    <p><strong>📆 Applied:</strong> ${leave.date}</p>
+                    ${isHOD && leave.status === 'Pending' ? `
+                        <div style="margin-top: 20px; display: flex; gap: 12px;">
+                            <button onclick="updateStatus(${globalIndex},'Approved')" class="primary-btn" style="background: #10b981; flex: 1; padding: 12px;">✅ Approve</button>
+                            <button onclick="updateStatus(${globalIndex},'Rejected')" style="flex: 1; padding: 12px; background: #ef4444; color: white; border: none; border-radius: 12px; cursor: pointer;">❌ Reject</button>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        });
+    }
+    html += '</div>';
+    content.innerHTML = html;
+}
+
+function updateBadge() {
+    const leaves = JSON.parse(localStorage.getItem("leaves")) || [];
+    const pendingCount = leaves.filter(l => l.status === "Pending").length;
+    const badge = document.getElementById("badge");
+    if (badge) {
+        if (pendingCount > 0) {
+            badge.textContent = pendingCount;
+            badge.style.display = "inline-block";
+        } else {
+            badge.style.display = "none";
+        }
+    }
+}
+
+function deleteLeave(index) {
+    const leaves = JSON.parse(localStorage.getItem("leaves")) || [];
+    leaves.splice(index, 1);
+    localStorage.setItem("leaves", JSON.stringify(leaves));
+    showPage('leaves');
+    updateBadge();
+}
+
+function updateStatus(index, status) {
+    const leaves = JSON.parse(localStorage.getItem("leaves")) || [];
+    leaves[index].status = status;
+    localStorage.setItem("leaves", JSON.stringify(leaves));
+    showPage('leaves');
+    updateBadge();
+}
+
+// Add shake animation
+const shakeStyle = document.createElement('style');
+shakeStyle.textContent = `
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-5px); }
+        75% { transform: translateX(5px); }
+    }
+`;
+document.head.appendChild(shakeStyle);
+
+window.onload = loadLanding;
+</script>
+</head>
+<body></body>
+</html>
